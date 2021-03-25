@@ -1,0 +1,108 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  font-size: 16px;
+}
+
+body {
+  background-color: darkslategray;
+  color: lightgray;
+}
+
+.header {
+  padding-top: 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.header p {
+  text-transform: initial;
+}
+
+header h1 {
+  padding: 10px 0 0;
+  color: tan;
+}
+
+h2 {
+  margin-top: 10px;
+  font-size: 1.25rem;
+  padding: 20px;
+}
+
+
+#main {
+  width: 80%;
+  background-color: rgb(57, 90, 90);
+  border: rgb(57, 90, 90);
+  margin: 40px auto;
+  color: tan;
+  /* padding: 40px; */
+
+}
+
+form {
+  padding: 0 10px 40px;
+}
+
+label {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+
+input[type="text"],
+button {
+  width: 100%;
+  padding: 5px;  
+  margin-bottom: 10px;
+
+}
+
+#display-todo-list {
+  border: 1px solid tan;
+  width: 80%;
+  padding: 0 10px 10px;
+  margin: 0 auto 10px;
+}
+
+#btn {
+  background-color: tan;
+  color: rgb(57, 90, 90);
+  margin-top: 10px;
+}
+
+.invisible {
+  display: none;
+}
+
+@media only screen and (min-width: 960px) {
+
+  body{
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+
+  h2 {
+    font-size: 2rem;
+  }
+
+
+  #main {
+    width: 45%;
+  }
+
+  input[type="text"],
+  button {
+  }
+  
+  form {
+    /* text-align: center; */
+  }
+
+  
+}
