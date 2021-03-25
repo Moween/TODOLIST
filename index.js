@@ -16,5 +16,7 @@ function displayTodo(e) {
   displayBox.appendChild(task);
   displayBox.appendChild(duration);
   displayBox.appendChild(document.createElement('hr'));
+  console.log(task);
+  console.log(duration);
 
 }
