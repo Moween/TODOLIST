@@ -19,15 +19,19 @@ body {
   text-transform: initial;
 }
 
-header h1 {
-  padding: 10px 0 0;
+h1 {
+  font-size: 1.56rem;
+  padding: 5px 0 0;
+  margin: 10px 0 0;
   color: tan;
+  font-weight: bold;
 }
 
 h2 {
-  margin-top: 10px;
+  margin-top: 5px;
   font-size: 1.25rem;
-  padding: 20px;
+  padding: 10px;
+  font-weight: bold;
 }
 
 
@@ -59,11 +63,12 @@ button {
 
 }
 
-#display-todo-list {
+.task-wrap {
   border: 1px solid tan;
-  width: 80%;
+  width: 90%;
   padding: 0 10px 10px;
   margin: 0 auto 10px;
+  position: relative;
 }
 
 #btn {
@@ -72,9 +77,14 @@ button {
   margin-top: 10px;
 }
 
-.invisible {
-  display: none;
+.deletebtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
 }
+
+
 
 @media only screen and (min-width: 960px) {
 
@@ -83,6 +93,10 @@ button {
   }
 
   h1 {
+    font-size: 3rem;
+  }
+
+  p {
     font-size: 2rem;
   }
 
@@ -96,13 +110,9 @@ button {
     width: 45%;
   }
 
-  input[type="text"],
+  label,
   button {
+    font-size: 1.75rem;
   }
-  
-  form {
-    /* text-align: center; */
-  }
-
   
 }
