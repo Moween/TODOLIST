@@ -38,6 +38,10 @@ function displayTodo(e) {
 
 
 function deleteItems(e) {
-  e.target.parentNode.style.display = 'none';
+  if(e.target.classList.contains('delete')) {
+    const del = e.target.parentNode;
+    document.querySelector('#todo-list').removeChild(del)
+  }
+  // e.target.parentNode.remove();
   console.log(e.target.parentNode);
 }
