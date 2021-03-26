@@ -1,4 +1,4 @@
-const main = document.querySelector('#main')
+const main = document.querySelector('#main');
 document.querySelector('#form').addEventListener('submit', displayTodo);
 
 
@@ -6,35 +6,53 @@ document.querySelector('#form').addEventListener('submit', displayTodo);
 function displayTodo(e) {
   e.stopPropagation();
   e.preventDefault();
+  //Create a div element to house the div elements
+  const taskWrap = document.createElement('div');
+  
+  taskWrap.className = 'display-todo-list';
 
-  //Create a div element to house the p elements
-  const displayBox = document.createElement('div');
-  displayBox.id = 'display-todo-list';
-
-  displayBox.innerHTML = "<h3>Get this done:</h3>"
+  taskWrap.innerHTML = "<h3>Get this done:</h3>";
 
   //Append div element to the main element
-  main.appendChild(displayBox)
+  main.appendChild(taskWrap);
 
 
   //Create p Element
-  const task = document.createElement('p');
+  const taskName = document.createElement('p');
 
   //Add textContent to the p element
-  task.textContent = "Task: "
-  task.textContent += document.getElementById('task').value;
+  taskName.textContent = "Task: ";
+  taskName.textContent += document.getElementById('task').value;
 
   //Create p Element
-  const duration = document.createElement('p');
+  const taskDuration = document.createElement('p');
 
   //Add textContent to the p element
-  duration.textContent = "Duration: "
-  duration.textContent += document.getElementById('duration').value;
+  taskDuration.textContent = "taskDuration: ";
+  taskDuration.textContent += document.getElementById('taskDuration').value;
 
-  //Append p element to the displaybox
-  displayBox.appendChild(task);
-  displayBox.appendChild(duration);
-  console.log(task);
-  console.log(duration);
+  //Append p element to the taskWrap
+  taskWrap.appendChild(taskName);
+  taskWrap.appendChild(taskDuration);
+  console.log(taskName);
+  console.log(taskDuration);
 
+  //Create deleteBtn
+  const deleteBtn = document.createElement('button');
+  deleteBtn.setAttribute("type","button");
+  deleteBtn.className = ('btn btn-danger btn-sm delete deletebtn');
+  //Add textContent
+  deleteBtn.textContent = "X";
+
+  //Append btn
+  taskWrap.appendChild(deleteBtn);
+
+  document.querySelector('.btn').addEventListener('click', deleteItems);
+}
+
+
+
+
+function deleteItems(e) {
+  console.log(1);
 }
