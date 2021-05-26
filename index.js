@@ -1,5 +1,6 @@
 const taskInput = document.querySelector('#task');
 const durationInput = document.querySelector('#duration');
+const todoList = document.querySelector('#todo-list');
 
 let todos = localStorage.getItem('todos');
 if(todos) {
@@ -27,8 +28,6 @@ const handleAddToLocalStorage = (e) =>  {
   e.preventDefault();
   const myTodo = new todoObj();
   const { task, duration} = myTodo;
-  console.log(task);
-  console.log(duration);
   let todo = localStorage.getItem('todos');
   if(todo) {
     todo = JSON.parse(todo);
@@ -36,7 +35,7 @@ const handleAddToLocalStorage = (e) =>  {
   todo.push({task, duration}); // Todo to push to local
   todos = [...todo];
   localStorage.setItem('todos', JSON.stringify(todo));
-  displayTodo();
+  displayTodo(e);
 }
 
 
@@ -56,55 +55,60 @@ class HTMLElements {
     //Add textContent to the p element
     this.taskDuration.textContent = "Task: " + document.getElementById('duration').value; 
     
-    //Create checkbox
-    this.checkbox = document.createElement('input');
-    this.checkbox.setAttribute("type","checkbox");
-    this.checkbox.setAttribute("id","taskWrap");
-    this.checkbox.setAttribute("value","todo");
+    //Create checkboxBtn
+    this.checkedBtn = document.createElement('button');
+    this.checkedBtn.className = ('btn btn-default btn-xs checked-btn');
+    this.checkedBtn.innerHTML = '<i class="fas fa-check"></i>';
+    
     
     // Create delete button
     this.deleteBtn = document.createElement('button');
     this.deleteBtn.setAttribute("type","button");
-    this.deleteBtn.className = ('btn btn-danger btn-sm delete deletebtn');
-    this.deleteBtn.textContent = "X";
+    this.deleteBtn.className = ('btn btn-danger btn-xs delete deletebtn');
+    this.deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'
     //Add EventListener to  btn
     // this.deleteBtn.addEventListener('click', handleDeleteTodo)
-    const todo = todos.some(todo => todo.task !== this.taskName.value);
+    const todo = todos.some(todo => todo.task === this.taskName.value);
     if(todo) {
       this.deleteBtn.onclick = handleDeleteTodo;
     }
   }
 }
 
-const displayTodo = () => {
-  const myTodo = new todoObj();
-  const { task, duration} = myTodo;
-  const allBtn = document.querySelector('#all');
-  allBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.querySelector('#todo-list').innerHTML = '';
+const displayNoTodoMessage = (e) => {
+  const p = document.createElement('p');
+  if(e.target.id === 'uncompleted' || e.target.id === 'completed') {
     if(!todos.length) {
-      const p = document.createElement('p');
       p.textContent = `No task to perform. Input a task.`;
+      p.style.margin = '10px';
+      document.querySelector('#todo-list').append(p);
+    }else {
+      p.textContent = `Tick completed task.`;
+      p.style.margin = '10px';
       document.querySelector('#todo-list').append(p);
     }
-    
-    todos.forEach(todo => {
-      const htmlElem = new HTMLElements();
-      const {
-        taskWrap,
-        taskName,
-        taskDuration,
-        deleteBtn,
-        checkbox
-      } = htmlElem;
+  }
+}
 
-      taskWrap.append(taskName, taskDuration, checkbox, deleteBtn);
-      taskName.textContent = `Task: ${todo.task}`;
-      taskDuration.textContent = `Duration: ${todo.duration}`;
-      document.querySelector('#todo-list').append(taskWrap);
-    });
+const displayTodo = (e) => {
+  const myTodo = new todoObj();
+  const { task, duration} = myTodo;
+  todos.forEach(todo => {
+    const htmlElem = new HTMLElements();
+    const {
+      taskWrap,
+      taskName,
+      taskDuration,
+      deleteBtn,
+      checkedBtn
+    } = htmlElem;
+
+    taskWrap.append(taskName, checkedBtn, deleteBtn);
+    taskName.textContent = `${todo.task} for ${todo.duration}`;
+    document.querySelector('#todo-list').append(taskWrap);
   })
+  displayCompleted();
+  displayUncompleted();
 }
 
 
@@ -113,16 +117,51 @@ const handleDeleteTodo = (e) => {
   if(e.target === document.querySelector('.btn-danger')) {
     const del = e.target.parentNode;
     const taskName = del.querySelector('p:first-of-type');
+    console.log('Task', taskName);
     let todo = localStorage.getItem('todos');
     todo = JSON.parse(todo);
     //Delete from local storage
-    todo = todo.filter(todo => todo.task === taskName);
+    // for(let i = 0; i < todo.length; i++) {
+    //   todo.splice(i, 1);
+    // }
+    todo = todo.filter(todo => todos.task !== taskName)
     todos = [...todo];
     // Reset Local Storage
     localStorage.setItem('todos', JSON.stringify(todo));
     // Delete from DOM
-    // document.querySelector('#todo-list').removeChild(del);
+    document.querySelector('#todo-list').removeChild(del);
   }
+}
+
+const displayCompleted = () => {
+  const completedBtn = document.querySelector('#completed');
+  completedBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    todoList.innerHTML = '';
+    displayNoTodoMessage(e);
+    if(document.querySelector('input[type="checkbox"]').checked) {
+      const h4Elem = document.createElement('h4');
+      const taskWrap = document.querySelector('.task-wrap');
+      todoList.append(h4Elem, taskWrap);
+      console.log("Completed Task", todoList);
+    }
+  })
+}
+
+const displayUncompleted = () => {
+  const uncompletedBtn = document.querySelector('#uncompleted');
+  uncompletedBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    todoList.innerHTML = '';
+    displayNoTodoMessage(e);
+    const h4Elem = document.createElement('h4');
+    if(!document.querySelector('input[type="checkbox"]').checked) {
+      h4Elem.textContent = 'Uncompleted Task';
+      const taskWrap = document.querySelector('.task-wrap');
+      todoList.append(h4Elem, taskWrap);
+      console.log("Uncompleted Task", todoList);
+    }
+  })
 }
 
 window.addEventListener('load', displayTodo);
