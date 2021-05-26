@@ -11,9 +11,7 @@ if(todos) {
 
 const clearInput = (e) => {
   e.preventDefault();
-  if(e.target === taskInput || e.target === durationInput) {
-    document.querySelector(`#${e.target.id}`).value = '';
-  }
+  document.querySelector(`#${e.target.id}`).value = '';
 }
 
 class todoObj{
