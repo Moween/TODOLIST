@@ -1,3 +1,5 @@
+const taskInput = document.querySelector('#task');
+const durationInput = document.querySelector('#duration');
 
 let todos = localStorage.getItem('todos');
 if(todos) {
@@ -5,6 +7,13 @@ if(todos) {
 }else {
   todos = [];
   localStorage.setItem('todos', JSON.stringify([]));
+}
+
+const clearInput = (e) => {
+  e.preventDefault();
+  if(e.target === taskInput || e.target === durationInput) {
+    document.querySelector(`#${e.target.id}`).value = '';
+  }
 }
 
 class todoObj{
@@ -15,7 +24,7 @@ class todoObj{
 }
 
 // Add to localStorage
-const addToLocalStorage = (e) =>  {
+const handleAddToLocalStorage = (e) =>  {
   e.stopPropagation();
   e.preventDefault();
   const myTodo = new todoObj();
@@ -31,6 +40,7 @@ const addToLocalStorage = (e) =>  {
   localStorage.setItem('todos', JSON.stringify(todo));
   displayTodo();
 }
+
 
 class HTMLElements {
   constructor() {
@@ -60,7 +70,11 @@ class HTMLElements {
     this.deleteBtn.className = ('btn btn-danger btn-sm delete deletebtn');
     this.deleteBtn.textContent = "X";
     //Add EventListener to  btn
-    this.deleteBtn.addEventListener('click', deleteTodo);
+    // this.deleteBtn.addEventListener('click', handleDeleteTodo)
+    const todo = todos.some(todo => todo.task !== this.taskName.value);
+    if(todo) {
+      this.deleteBtn.onclick = handleDeleteTodo;
+    }
   }
 }
 
@@ -70,18 +84,24 @@ const displayTodo = () => {
   const allBtn = document.querySelector('#all');
   allBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    const htmlElem = new HTMLElements();
-    const {
-      taskWrap,
-      taskName,
-      taskDuration,
-      deleteBtn,
-      checkbox
-    } = htmlElem;
-  
-    taskWrap.append(taskName, taskDuration, checkbox, deleteBtn);
-      console.log(taskWrap)
+    document.querySelector('#todo-list').innerHTML = '';
+    if(!todos.length) {
+      const p = document.createElement('p');
+      p.textContent = `No task to perform. Input a task.`;
+      document.querySelector('#todo-list').append(p);
+    }
+    
     todos.forEach(todo => {
+      const htmlElem = new HTMLElements();
+      const {
+        taskWrap,
+        taskName,
+        taskDuration,
+        deleteBtn,
+        checkbox
+      } = htmlElem;
+
+      taskWrap.append(taskName, taskDuration, checkbox, deleteBtn);
       taskName.textContent = `Task: ${todo.task}`;
       taskDuration.textContent = `Duration: ${todo.duration}`;
       document.querySelector('#todo-list').append(taskWrap);
@@ -90,14 +110,24 @@ const displayTodo = () => {
 }
 
 
-
-const deleteTodo = (e) => {
-  if(e.target.classList.contains('delete')) {
+const handleDeleteTodo = (e) => {
+  e.preventDefault();
+  if(e.target === document.querySelector('.btn-danger')) {
     const del = e.target.parentNode;
-    document.querySelector('#todo-list').removeChild(del);
+    const taskName = del.querySelector('p:first-of-type');
+    let todo = localStorage.getItem('todos');
+    todo = JSON.parse(todo);
+    //Delete from local storage
+    todo = todo.filter(todo => todo.task === taskName);
+    todos = [...todo];
+    // Reset Local Storage
+    localStorage.setItem('todos', JSON.stringify(todo));
+    // Delete from DOM
+    // document.querySelector('#todo-list').removeChild(del);
   }
-  // e.target.parentNode.remove();
-  console.log(e.target.parentNode);
 }
 
-document.querySelector('#form').addEventListener('submit', addToLocalStorage);
+window.addEventListener('load', displayTodo);
+taskInput.addEventListener('click', clearInput);
+durationInput.addEventListener('click', clearInput);
+document.querySelector('#form').addEventListener('submit', handleAddToLocalStorage);
