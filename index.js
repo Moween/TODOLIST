@@ -19,6 +19,7 @@ class todoObj{
   constructor() {
     this.task = document.querySelector('#task').value;
     this.duration = document.querySelector('#duration').value;
+    this.id = Date.now();
   }
 }
 
@@ -27,12 +28,13 @@ const handleAddToLocalStorage = (e) =>  {
   e.stopPropagation();
   e.preventDefault();
   const myTodo = new todoObj();
-  const { task, duration} = myTodo;
+  const { task, duration, id} = myTodo;
   let todo = localStorage.getItem('todos');
   if(todo) {
     todo = JSON.parse(todo);
   }
-  todo.push({task, duration}); // Todo to push to local
+  todo.push({task, duration, id}); // Todo to push to local      
+  console.log(todo)  
   todos = [...todo];
   localStorage.setItem('todos', JSON.stringify(todo));
   displayTodo(e);
@@ -44,7 +46,7 @@ class HTMLElements {
     //Create a div element to house the div elements
     this.taskWrap = document.createElement('div');  
     this.taskWrap.className = 'task-wrap';
-
+  
     //Create p Element
     this.taskName = document.createElement('p');
     //Add textContent to the p element
@@ -67,11 +69,7 @@ class HTMLElements {
     this.deleteBtn.className = ('btn btn-danger btn-xs delete deletebtn');
     this.deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'
     //Add EventListener to  btn
-    // this.deleteBtn.addEventListener('click', handleDeleteTodo)
-    const todo = todos.some(todo => todo.task === this.taskName.value);
-    if(todo) {
-      this.deleteBtn.onclick = handleDeleteTodo;
-    }
+    this.deleteBtn.onclick = handleDeleteTodo;
   }
 }
 
@@ -91,8 +89,10 @@ const displayNoTodoMessage = (e) => {
 }
 
 const displayTodo = (e) => {
+  e.preventDefault();
+  todoList.innerHTML = '';
   const myTodo = new todoObj();
-  const { task, duration} = myTodo;
+  const { task, duration, id } = myTodo;
   todos.forEach(todo => {
     const htmlElem = new HTMLElements();
     const {
@@ -103,6 +103,7 @@ const displayTodo = (e) => {
       checkedBtn
     } = htmlElem;
 
+    taskWrap.id = todo.id;
     taskWrap.append(taskName, checkedBtn, deleteBtn);
     taskName.textContent = `${todo.task} for ${todo.duration}`;
     document.querySelector('#todo-list').append(taskWrap);
@@ -114,23 +115,20 @@ const displayTodo = (e) => {
 
 const handleDeleteTodo = (e) => {
   e.preventDefault();
-  if(e.target === document.querySelector('.btn-danger')) {
-    const del = e.target.parentNode;
-    const taskName = del.querySelector('p:first-of-type');
-    console.log('Task', taskName);
-    let todo = localStorage.getItem('todos');
-    todo = JSON.parse(todo);
-    //Delete from local storage
-    // for(let i = 0; i < todo.length; i++) {
-    //   todo.splice(i, 1);
-    // }
-    todo = todo.filter(todo => todos.task !== taskName)
-    todos = [...todo];
-    // Reset Local Storage
-    localStorage.setItem('todos', JSON.stringify(todo));
-    // Delete from DOM
-    document.querySelector('#todo-list').removeChild(del);
-  }
+  const del = e.target.parentNode;
+
+  let todo = localStorage.getItem('todos');
+  todo = JSON.parse(todo);
+
+  //Delete from local storage
+  todo = todo.filter(todo => todo.id !== Number(del.id))
+  todos = [...todo];
+
+  // Reset Local Storage
+  localStorage.setItem('todos', JSON.stringify(todo));
+
+  // Delete from DOM
+  document.querySelector('#todo-list').removeChild(del);
 }
 
 const displayCompleted = () => {
@@ -139,7 +137,7 @@ const displayCompleted = () => {
     e.preventDefault();
     todoList.innerHTML = '';
     displayNoTodoMessage(e);
-    if(document.querySelector('input[type="checkbox"]').checked) {
+    if(document.querySelector('button')) {
       const h4Elem = document.createElement('h4');
       const taskWrap = document.querySelector('.task-wrap');
       todoList.append(h4Elem, taskWrap);
