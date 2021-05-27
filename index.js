@@ -115,20 +115,20 @@ const displayTodo = (e) => {
 
 const handleDeleteTodo = (e) => {
   e.preventDefault();
-  const del = e.target.parentNode;
-
+  e.stopPropagation();
+  const deleteItem = e.target.parentNode.parentNode;
   let todo = localStorage.getItem('todos');
   todo = JSON.parse(todo);
 
   //Delete from local storage
-  todo = todo.filter(todo => todo.id !== Number(del.id))
+  todo = todo.filter(todo => todo.id !== Number(deleteItem.id))
   todos = [...todo];
 
   // Reset Local Storage
   localStorage.setItem('todos', JSON.stringify(todo));
 
   // Delete from DOM
-  document.querySelector('#todo-list').removeChild(del);
+  document.querySelector('#todo-list').removeChild(deleteItem);
 }
 
 const displayCompleted = () => {
