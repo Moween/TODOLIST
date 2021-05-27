@@ -1,6 +1,9 @@
 const taskInput = document.querySelector('#task');
 const durationInput = document.querySelector('#duration');
 const todoList = document.querySelector('#todo-list');
+const completedBtn = document.querySelector('#completed');
+const unCompletedBtn = document.querySelector('#uncompleted');
+
 
 let todos = localStorage.getItem('todos');
 if(todos) {
@@ -34,7 +37,6 @@ const handleAddToLocalStorage = (e) =>  {
     todo = JSON.parse(todo);
   }
   todo.push({task, duration, id}); // Todo to push to local      
-  console.log(todo)  
   todos = [...todo];
   localStorage.setItem('todos', JSON.stringify(todo));
   displayTodo(e);
@@ -80,7 +82,7 @@ const displayNoTodoMessage = (e) => {
       p.textContent = `No task to perform. Input a task.`;
       p.style.margin = '10px';
       document.querySelector('#todo-list').append(p);
-    }else {
+    } else {
       p.textContent = `Tick completed task.`;
       p.style.margin = '10px';
       document.querySelector('#todo-list').append(p);
@@ -103,7 +105,8 @@ const displayTodo = (e) => {
       checkedBtn
     } = htmlElem;
 
-    taskWrap.id = todo.id;
+    deleteBtn.setAttribute('data-id', todo.id);
+    checkedBtn.setAttribute('data-id', todo.id);
     taskWrap.append(taskName, checkedBtn, deleteBtn);
     taskName.textContent = `${todo.task} for ${todo.duration}`;
     document.querySelector('#todo-list').append(taskWrap);
@@ -114,20 +117,65 @@ const displayTodo = (e) => {
 const handleDeleteTodo = (e) => {
   e.preventDefault();
   e.stopPropagation();
-  const deleteItem = e.currentTarget.parentNode;
+  const deleteItem = e.currentTarget.dataset.id;
   let todo = localStorage.getItem('todos');
   todo = JSON.parse(todo);
 
   //Delete from local storage
-  todo = todo.filter(todo => todo.id !== Number(deleteItem.id))
+  todo = todo.filter(todo => todo.id !== Number(deleteItem));
   todos = [...todo];
 
   // Reset Local Storage
   localStorage.setItem('todos', JSON.stringify(todo));
 
   // Delete from DOM
-  document.querySelector('#todo-list').removeChild(deleteItem);
+  displayTodo(e);
 }
+
+
+const handleTickEvents = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  const checkIcon = e.target;
+  checkIcon.style.color = 'blue';
+  let todo = localStorage.getItem('todos');
+  if(todo) {
+    todo = JSON.parse(todo);
+  }
+  todo.forEach(todoObj => {
+    if(todoObj.id === Number(e.currentTarget.dataset.id))  {
+      todoObj['checked'] = true;
+    } 
+
+  });  
+  todos = [...todo];
+  // Reset local storage
+  localStorage.setItem('todos', JSON.stringify(todo));
+  e.currentTarget.onclick = handleUntickEvents; 
+}
+
+const handleUntickEvents = (e) => {
+  e.preventDefault();
+  // e.stopPropagation();
+  const checkIcon = e.target;
+  checkIcon.style.color = 'white';
+  let todo = localStorage.getItem('todos');
+  if(todo) {
+    todo = JSON.parse(todo);
+  }
+  todo.forEach(todoObj => {
+    if(todoObj.id === Number(e.currentTarget.dataset.id))  {
+      console.log('Hy')
+      delete todoObj.checked;
+    } 
+  });  
+
+  todos = [...todo];
+  // Reset local storage
+  localStorage.setItem('todos', JSON.stringify(todo));
+  e.currentTarget.onclick = handleTickEvents;
+}
+
 
 // Add Event Listener
 window.addEventListener('load', displayTodo);
