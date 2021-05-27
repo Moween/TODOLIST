@@ -61,8 +61,8 @@ class HTMLElements {
     this.checkedBtn = document.createElement('button');
     this.checkedBtn.className = ('btn btn-default btn-xs checked-btn');
     this.checkedBtn.innerHTML = '<i class="fas fa-check"></i>';
-    
-    
+    this.checkedBtn.onclick = handleTickEvents;
+
     // Create delete button
     this.deleteBtn = document.createElement('button');
     this.deleteBtn.setAttribute("type","button");
@@ -108,15 +108,13 @@ const displayTodo = (e) => {
     taskName.textContent = `${todo.task} for ${todo.duration}`;
     document.querySelector('#todo-list').append(taskWrap);
   })
-  displayCompleted();
-  displayUncompleted();
 }
 
 
 const handleDeleteTodo = (e) => {
   e.preventDefault();
   e.stopPropagation();
-  const deleteItem = e.target.parentNode.parentNode;
+  const deleteItem = e.currentTarget.parentNode;
   let todo = localStorage.getItem('todos');
   todo = JSON.parse(todo);
 
@@ -131,37 +129,7 @@ const handleDeleteTodo = (e) => {
   document.querySelector('#todo-list').removeChild(deleteItem);
 }
 
-const displayCompleted = () => {
-  const completedBtn = document.querySelector('#completed');
-  completedBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    todoList.innerHTML = '';
-    displayNoTodoMessage(e);
-    if(document.querySelector('button')) {
-      const h4Elem = document.createElement('h4');
-      const taskWrap = document.querySelector('.task-wrap');
-      todoList.append(h4Elem, taskWrap);
-      console.log("Completed Task", todoList);
-    }
-  })
-}
-
-const displayUncompleted = () => {
-  const uncompletedBtn = document.querySelector('#uncompleted');
-  uncompletedBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    todoList.innerHTML = '';
-    displayNoTodoMessage(e);
-    const h4Elem = document.createElement('h4');
-    if(!document.querySelector('input[type="checkbox"]').checked) {
-      h4Elem.textContent = 'Uncompleted Task';
-      const taskWrap = document.querySelector('.task-wrap');
-      todoList.append(h4Elem, taskWrap);
-      console.log("Uncompleted Task", todoList);
-    }
-  })
-}
-
+// Add Event Listener
 window.addEventListener('load', displayTodo);
 taskInput.addEventListener('click', clearInput);
 durationInput.addEventListener('click', clearInput);
