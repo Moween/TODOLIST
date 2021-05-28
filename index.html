@@ -8,6 +8,10 @@
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
   integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <script src="https://kit.fontawesome.com/52e1924adf.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+
   
   <!--STYLESHEET-->
   <link rel="stylesheet" href="styles.css">
@@ -19,8 +23,9 @@
       <h1 id="h01">todo list</h1>
       <nav class="navbar">
         <ul class="nav-list">
-          <a href="#"id="uncompleted">Uncompleted</a>
-          <a href="#"id="completed">Completed</a>
+          <a href="#" id="all">All</a>
+          <a href="#" id="uncompleted">Uncompleted</a>
+          <a href="#" id="completed">Completed</a>
         </ul>
       </nav>
     </header>
@@ -32,7 +37,9 @@
         <input type="text" name="duration" id="duration" required placeholder="Set a Duration(say 1hr)"><br />
         <button id="btn" type="submit">Submit</button>
       </form>
-      <div id="todo-list"></div>
+      <div id="todo-container">
+        <ul id="todo-list"></ul>
+      </div>
   
     </main>
   </div>
