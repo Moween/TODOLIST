@@ -1,10 +1,11 @@
 const taskInput = document.querySelector('#task');
 const durationInput = document.querySelector('#duration');
 const todoList = document.querySelector('#todo-list');
+const allBtn = document.querySelector('#all');
 const completedBtn = document.querySelector('#completed');
 const unCompletedBtn = document.querySelector('#uncompleted');
 
-
+// Global todos: A copy of our local storage data
 let todos = localStorage.getItem('todos');
 if(todos) {
   todos = JSON.parse(todos);
@@ -13,6 +14,7 @@ if(todos) {
   localStorage.setItem('todos', JSON.stringify([]));
 }
 
+// Clears Input
 const clearInput = (e) => {
   e.preventDefault();
   document.querySelector(`#${e.target.id}`).value = '';
@@ -39,10 +41,10 @@ const handleAddToLocalStorage = (e) =>  {
   todo.push({task, duration, id}); // Todo to push to local      
   todos = [...todo];
   localStorage.setItem('todos', JSON.stringify(todo));
-  displayTodo(e);
+  displayTodo(todos);
 }
 
-
+// Creates HTML Elements
 class HTMLElements {
   constructor() {
     //Create a div element to house the div elements
@@ -75,6 +77,7 @@ class HTMLElements {
   }
 }
 
+// Display message if no list is available
 const displayNoTodoMessage = (e) => {
   const p = document.createElement('p');
   if(e.target.id === 'uncompleted' || e.target.id === 'completed') {
@@ -90,12 +93,12 @@ const displayNoTodoMessage = (e) => {
   }
 }
 
-const displayTodo = (e) => {
-  e.preventDefault();
+// Display Todo
+const displayTodo = (todosArr) => {
   todoList.innerHTML = '';
   const myTodo = new todoObj();
   const { task, duration, id } = myTodo;
-  todos.forEach(todo => {
+  todosArr.forEach(todo => {
     const htmlElem = new HTMLElements();
     const {
       taskWrap,
@@ -129,7 +132,7 @@ const handleDeleteTodo = (e) => {
   localStorage.setItem('todos', JSON.stringify(todo));
 
   // Delete from DOM
-  displayTodo(e);
+  displayTodo(todos);
 }
 
 
@@ -165,7 +168,6 @@ const handleUntickEvents = (e) => {
   }
   todo.forEach(todoObj => {
     if(todoObj.id === Number(e.currentTarget.dataset.id))  {
-      console.log('Hy')
       delete todoObj.checked;
     } 
   });  
@@ -176,9 +178,53 @@ const handleUntickEvents = (e) => {
   e.currentTarget.onclick = handleTickEvents;
 }
 
+const filterTodos = (e) => {
+  e.preventDefault();
+  todoList.innerHTML = '';
+  let filteredTodos;
+  switch(e.target.id) {
+    case 'all':      
+      displayTodo(todos);
+      break;
+    case 'completed':
+      filteredTodos = todos.filter(todosObj => todosObj.checked === true);
+      if(filteredTodos.length){
+        displayTodo(filteredTodos);
+        document.querySelector('.task-wrap p').className = 'completed';
+      }else {
+        displayNoTodoMessage(e); 
+      }
+      break;
+    case 'uncompleted': 
+      filteredTodos = todos.filter(todosObj => !todosObj.checked);
+      if(!filteredTodos.length) {
+        displayNoTodoMessage(e); 
+      }else {
+        displayTodo(filteredTodos);
+      }
+      break;
+  } 
+}
 
+const displayUnCompletedTask = (e) => {
+  filterTodos(e); 
+}
+
+const displayCompletedTask = (e) => {
+  filterTodos(e);
+}
+
+const displayAllTask = (e) => {
+  filterTodos(e);
+}
+
+
+
+displayTodo(todos);
 // Add Event Listener
-window.addEventListener('load', displayTodo);
 taskInput.addEventListener('click', clearInput);
 durationInput.addEventListener('click', clearInput);
+allBtn.addEventListener('click', displayAllTask);
+completedBtn.addEventListener('click', displayCompletedTask);
+unCompletedBtn.addEventListener('click', displayUnCompletedTask);
 document.querySelector('#form').addEventListener('submit', handleAddToLocalStorage);
