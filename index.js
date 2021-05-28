@@ -1,3 +1,4 @@
+// Variables
 const taskInput = document.querySelector('#task');
 const durationInput = document.querySelector('#duration');
 const todoList = document.querySelector('#todo-list');
@@ -103,7 +104,6 @@ const displayTodo = (todosArr) => {
     const {
       taskWrap,
       taskName,
-      taskDuration,
       deleteBtn,
       checkedBtn
     } = htmlElem;
@@ -112,7 +112,7 @@ const displayTodo = (todosArr) => {
     checkedBtn.setAttribute('data-id', todo.id);
     taskWrap.append(taskName, checkedBtn, deleteBtn);
     taskName.textContent = `${todo.task} for ${todo.duration}`;
-    if(todo.checked === true) {
+    if(todo.completed === true) {
       taskName.className = 'completed';
     }else {
       taskName.classList.remove('completed');
@@ -120,7 +120,6 @@ const displayTodo = (todosArr) => {
     document.querySelector('#todo-list').append(taskWrap);
   })
 }
-
 
 const handleDeleteTodo = (e) => {
   e.preventDefault();
@@ -140,47 +139,49 @@ const handleDeleteTodo = (e) => {
   displayTodo(todos);
 }
 
+const toggleTick = (e) => {
+  e.currentTarget.onclick = (e.currentTarget.onclick === handleUntickEvents ?
+    handleTickEvents : handleUntickEvents);
+  e.target.style.color = (e.target.style.color === 'blue' ? 'white' : 'blue');
+}
 
 const handleTickEvents = (e) => {
   e.preventDefault();
   e.stopPropagation();
-  const checkIcon = e.target;
-  checkIcon.style.color = 'blue';
   let todo = localStorage.getItem('todos');
   if(todo) {
     todo = JSON.parse(todo);
   }
   todo.forEach(todoObj => {
     if(todoObj.id === Number(e.currentTarget.dataset.id))  {
-      todoObj['checked'] = true;
+      todoObj['completed'] = true;
     } 
-
   });  
   todos = [...todo];
+  
   // Reset local storage
   localStorage.setItem('todos', JSON.stringify(todo));
-  e.currentTarget.onclick = handleUntickEvents; 
+  toggleTick(e);
 }
 
 const handleUntickEvents = (e) => {
   e.preventDefault();
   // e.stopPropagation();
-  const checkIcon = e.target;
-  checkIcon.style.color = 'white';
   let todo = localStorage.getItem('todos');
   if(todo) {
     todo = JSON.parse(todo);
   }
   todo.forEach(todoObj => {
     if(todoObj.id === Number(e.currentTarget.dataset.id))  {
-      delete todoObj.checked;
+      delete todoObj.completed;
     } 
   });  
 
   todos = [...todo];
   // Reset local storage
   localStorage.setItem('todos', JSON.stringify(todo));
-  e.currentTarget.onclick = handleTickEvents;
+  toggleTick(e);
+  displayTodo(todos);
 }
 
 const filterTodos = (e) => {
@@ -188,11 +189,8 @@ const filterTodos = (e) => {
   todoList.innerHTML = '';
   let filteredTodos;
   switch(e.target.id) {
-    case 'all':      
-      displayTodo(todos);
-      break;
     case 'completed':
-      filteredTodos = todos.filter(todosObj => todosObj.checked === true);
+      filteredTodos = todos.filter(todosObj => todosObj.completed === true);
       if(filteredTodos.length){
         displayTodo(filteredTodos);
       }else {
@@ -200,13 +198,16 @@ const filterTodos = (e) => {
       }
       break;
     case 'uncompleted': 
-      filteredTodos = todos.filter(todosObj => !todosObj.checked);
+      filteredTodos = todos.filter(todosObj => !todosObj.completed);
       if(!filteredTodos.length) {
         displayNoTodoMessage(e); 
       }else {
         displayTodo(filteredTodos);
       }
       break;
+    case 'all':      
+      displayTodo(todos);
+      break;  
   } 
 }
 
@@ -220,6 +221,7 @@ const displayCompletedTask = (e) => {
 
 const displayAllTask = (e) => {
   filterTodos(e);
+  displayTodo(todos);
 }
 
 
