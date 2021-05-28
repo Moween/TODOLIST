@@ -1,12 +1,14 @@
 * {
   box-sizing: border-box;
   margin: 0;
+  padding: 0;
   font-size: 16px;
 }
 
 body {
   background-color: darkslategray;
   color: lightgray;
+  font-family: cursive;
 }
 
 .page-wrapper {
@@ -16,12 +18,14 @@ body {
 
 .header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
   text-transform: uppercase;
 }
 
 header h1 {
-  width: 50%;
   font-size: 2rem;
   padding: 5px 0 0;
   margin: 10px 5px 0;
@@ -30,17 +34,17 @@ header h1 {
 }
 
 .navbar {
+  min-height: auto;
   padding: 5px 0 0;
-  font-weight: bold;
+  font-weight: 400;
   margin-top:  10px;
-  margin-bottom: 0 ! important;
-  display: flex;
-  justify-content: end;
+  margin-bottom: 0 ! important;  
 }
 
 .navbar a {
   color: tan;
   margin: 0 5px;
+  width: 50%;
   text-decoration: none;
 }
 
@@ -50,6 +54,10 @@ header h1 {
 }
 
 .nav-list {
+  padding-left: 0;
+  text-transform: capitalize;
+  display: flex;
+  justify-content: end;
   margin-bottom: 0;
 }
 
@@ -62,11 +70,8 @@ h2 {
 
 
 #main {
-  width: 80%;
-  margin: 40px auto;
-  
-  /* padding: 40px; */
-  
+  width: 90%;
+  margin: 40px auto;  
 }
 
 form {
@@ -81,7 +86,6 @@ label {
   font-weight: bold;
 }
 
-
 input[type="text"],
 button {
   width: 100%;
@@ -89,38 +93,62 @@ button {
   margin-bottom: 10px;
 
 }
+
 #todo-list {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  padding-left: 0;
 }
 
 .task-wrap {
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-  width: 80%;
   text-align: left;
-  padding: 0 10px 10px;
+  padding: 0 10px 0px;
   margin: 50px  auto 10px;
   position: relative;
+}
+
+.task-wrap p {
+  margin: 0;
+}
+button:focus {
+  outline: none !important;
 }
 
 #btn {
   background-color: tan;
   color: rgb(57, 90, 90);
-  margin-top: 10px;
+  outline: none;
 }
 
 .deletebtn {
   position: absolute;
+  height: inherit;
   top: 0;
   right: 0;
   width: 30px;
+  outline: none;
+  cursor: pointer;
 }
-.bookmark-btn {
+.checked-btn {
+  height: inherit;
   position: absolute;
+  cursor: pointer;
   top: 0;
-  right: 20px;
+  right: 25px;
   width: 30px;
+  margin-right: 5px;
+  outline: none;
+}
+
+.completed {
+  text-decoration: line-through;
+  opacity: 0.5;
+  transform: scale(0.96);
+}
+
+.h04 {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 
@@ -136,7 +164,7 @@ button {
   }
 
   p {
-    font-size: 2rem;
+    font-size: 1.875rem;
   }
 
 
@@ -152,6 +180,12 @@ button {
   label,
   button {
     font-size: 1.75rem;
+  }
+
+  .deletebtn,
+  .checked-btn {
+    height: inherit;
+    top: 3px;
   }
   
 }
