@@ -66,8 +66,13 @@ class HTMLElements {
     this.checkedBtn = document.createElement('button');
     this.checkedBtn.className = ('btn btn-default btn-xs checked-btn');
     this.checkedBtn.innerHTML = '<i class="fas fa-check"></i>';
-    this.checkedBtn.onclick = handleTickEvents;
-
+    let tickTodo = todos.some(elem => elem.id === this.checkedBtn.dataset.id);
+    if(tickTodo) {
+      this.checkedBtn.onclick = handleTickEvents;
+    }else {
+      this.checkedBtn.onclick = handleUntickEvents;      
+    }
+    
     // Create delete button
     this.deleteBtn = document.createElement('button');
     this.deleteBtn.setAttribute("type","button");
@@ -162,6 +167,7 @@ const handleTickEvents = (e) => {
   // Reset local storage
   localStorage.setItem('todos', JSON.stringify(todo));
   toggleTick(e);
+  displayTodo(todos);
 }
 
 const handleUntickEvents = (e) => {
@@ -180,8 +186,8 @@ const handleUntickEvents = (e) => {
   todos = [...todo];
   // Reset local storage
   localStorage.setItem('todos', JSON.stringify(todo));
+  // displayTodo(todos);
   toggleTick(e);
-  displayTodo(todos);
 }
 
 const filterTodos = (e) => {
@@ -189,6 +195,9 @@ const filterTodos = (e) => {
   todoList.innerHTML = '';
   let filteredTodos;
   switch(e.target.id) {
+    case 'all':      
+      displayTodo(todos);
+      break;
     case 'completed':
       filteredTodos = todos.filter(todosObj => todosObj.completed === true);
       if(filteredTodos.length){
@@ -205,9 +214,6 @@ const filterTodos = (e) => {
         displayTodo(filteredTodos);
       }
       break;
-    case 'all':      
-      displayTodo(todos);
-      break;  
   } 
 }
 
@@ -221,7 +227,6 @@ const displayCompletedTask = (e) => {
 
 const displayAllTask = (e) => {
   filterTodos(e);
-  displayTodo(todos);
 }
 
 
