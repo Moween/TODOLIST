@@ -43,15 +43,11 @@ header h1 {
   margin-bottom: 0 ! important;  
 }
 
-.navbar a:first-of-type {
-  width: 20%;
-}
-
 .navbar a {
   text-align: center;
   color: darkslategray;
   margin: 0 5px;
-  width: 50%;
+  width: 33.33%;
   text-decoration: none;
 }
 
