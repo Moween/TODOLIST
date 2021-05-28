@@ -112,6 +112,11 @@ const displayTodo = (todosArr) => {
     checkedBtn.setAttribute('data-id', todo.id);
     taskWrap.append(taskName, checkedBtn, deleteBtn);
     taskName.textContent = `${todo.task} for ${todo.duration}`;
+    if(todo.checked === true) {
+      taskName.className = 'completed';
+    }else {
+      taskName.classList.remove('completed');
+    }
     document.querySelector('#todo-list').append(taskWrap);
   })
 }
@@ -190,7 +195,6 @@ const filterTodos = (e) => {
       filteredTodos = todos.filter(todosObj => todosObj.checked === true);
       if(filteredTodos.length){
         displayTodo(filteredTodos);
-        document.querySelector('.task-wrap p').className = 'completed';
       }else {
         displayNoTodoMessage(e); 
       }
