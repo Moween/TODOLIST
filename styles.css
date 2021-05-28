@@ -194,5 +194,9 @@ button:focus {
     height: inherit;
     top: 3px;
   }
+
+  .navbar {
+    width: 70%;
+  }
   
 }
