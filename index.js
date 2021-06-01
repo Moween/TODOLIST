@@ -31,15 +31,15 @@ class todoObj{
 
 // Add to localStorage
 const handleAddToLocalStorage = (e) =>  {
-  e.stopPropagation();
   e.preventDefault();
+  e.stopPropagation();
   const myTodo = new todoObj();
-  const { task, duration, id} = myTodo;
+  const { task, duration, id } = myTodo;
   let todo = localStorage.getItem('todos');
   if(todo) {
     todo = JSON.parse(todo);
   }
-  todo.push({task, duration, id}); // Todo to push to local      
+  todo.push({ task, duration, id }); // Todo to push to local      
   todos = [...todo];
   localStorage.setItem('todos', JSON.stringify(todo));
   displayTodo(todos);
@@ -48,19 +48,19 @@ const handleAddToLocalStorage = (e) =>  {
 // Creates HTML Elements
 class HTMLElements {
   constructor() {
-    //Create a div element to house the div elements
+    //Create a div element to house the task, duration, button elements
     this.taskWrap = document.createElement('div');  
     this.taskWrap.className = 'task-wrap';
   
     //Create p Element
     this.taskName = document.createElement('p');
     //Add textContent to the p element
-    this.taskName.textContent = "Task: " + document.getElementById('task').value; 
+    this.taskName.textContent = document.getElementById('task').value; 
 
     //Create p Element
     this.taskDuration = document.createElement('p');
     //Add textContent to the p element
-    this.taskDuration.textContent = "Task: " + document.getElementById('duration').value; 
+    this.taskDuration.textContent = document.getElementById('duration').value; 
     
     //Create checkboxBtn
     this.checkedBtn = document.createElement('button');
@@ -69,8 +69,10 @@ class HTMLElements {
     let tickTodo = todos.some(elem => elem.id === this.checkedBtn.dataset.id);
     if(tickTodo) {
       this.checkedBtn.onclick = handleTickEvents;
+      tickTodo = false;
     }else {
       this.checkedBtn.onclick = handleUntickEvents;      
+      tickTodo = true;
     }
     
     // Create delete button
@@ -129,7 +131,7 @@ const displayTodo = (todosArr) => {
 const handleDeleteTodo = (e) => {
   e.preventDefault();
   e.stopPropagation();
-  const deleteItem = e.currentTarget.dataset.id;
+  const { currentTarget: { dataset: { id: deleteItem } } } = e;
   let todo = localStorage.getItem('todos');
   todo = JSON.parse(todo);
 
@@ -186,7 +188,6 @@ const handleUntickEvents = (e) => {
   todos = [...todo];
   // Reset local storage
   localStorage.setItem('todos', JSON.stringify(todo));
-  // displayTodo(todos);
   toggleTick(e);
 }
 
@@ -200,8 +201,9 @@ const filterTodos = (e) => {
       break;
     case 'completed':
       filteredTodos = todos.filter(todosObj => todosObj.completed === true);
-      if(filteredTodos.length){
+      if(filteredTodos.length) {
         displayTodo(filteredTodos);
+        todoList.insertAdjacentText('afterbegin', 'Completed task');
       }else {
         displayNoTodoMessage(e); 
       }
@@ -212,6 +214,7 @@ const filterTodos = (e) => {
         displayNoTodoMessage(e); 
       }else {
         displayTodo(filteredTodos);
+        todoList.insertAdjacentText('afterbegin', 'Uncompleted task');
       }
       break;
   } 
@@ -228,7 +231,6 @@ const displayCompletedTask = (e) => {
 const displayAllTask = (e) => {
   filterTodos(e);
 }
-
 
 
 displayTodo(todos);
